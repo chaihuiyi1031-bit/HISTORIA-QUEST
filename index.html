@@ -1,0 +1,372 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>HISTORIA QUEST | 历史探险家</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    background: #53c4ef;
+  }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  /* 背景图片及页面容器 */
+  .website {
+    position: relative;
+    width: 100%;
+    max-width: 1648px;
+    margin: 0 auto;
+  }
+
+  .background {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* 顶部导航栏 */
+  .navbar {
+    position: absolute;
+    top: 2%;
+    left: 2%;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .nav-btn {
+    padding: 11px 19px;
+    border: 3px solid #995d32;
+    border-radius: 18px;
+    background: linear-gradient(#ffe9b8, #e4b574);
+    color: #613717;
+    font-size: clamp(11px, 1.2vw, 17px);
+    font-weight: bold;
+    box-shadow: 0 5px 0 #925424;
+    transition: transform .25s, background .25s;
+  }
+
+  .nav-btn:hover {
+    transform: translateY(-4px);
+    background: #fff0bc;
+  }
+
+  /* 三个年级按钮的位置 */
+  .grade-button {
+    position: absolute;
+    z-index: 5;
+    width: 15%;
+    min-height: 5.5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    padding: 10px 5px;
+    border: 3px solid white;
+    border-radius: 100px;
+    color: white;
+    font-size: clamp(10px, 1.5vw, 22px);
+    font-weight: 900;
+    text-shadow: 0 2px 3px rgba(0,0,0,.25);
+
+    box-shadow:
+      0 5px 0 rgba(58,50,42,.35),
+      0 8px 18px rgba(0,0,0,.25),
+      inset 0 3px 4px rgba(255,255,255,.4);
+
+    transition:
+      transform .25s ease,
+      box-shadow .25s ease,
+      filter .25s ease;
+  }
+
+  /* 四年级 - 绿色 */
+  .grade4 {
+    left: 16%;
+    top: 57%;
+    background: linear-gradient(#67ec90, #12a54d);
+  }
+
+  /* 五年级 - 蓝色 */
+  .grade5 {
+    left: 43%;
+    top: 64%;
+    background: linear-gradient(#75d8ff, #087fe0);
+  }
+
+  /* 六年级 - 紫色 */
+  .grade6 {
+    left: 72%;
+    top: 56%;
+    background: linear-gradient(#df95ff, #9136dd);
+  }
+
+  /* 鼠标悬浮动画 */
+  .grade-button:hover {
+    transform: translateY(-6px) scale(1.08);
+    filter: brightness(1.12);
+    box-shadow:
+      0 8px 0 rgba(58,50,42,.3),
+      0 0 25px rgba(255,255,255,.95),
+      0 12px 22px rgba(0,0,0,.2);
+  }
+
+  .grade-button:active {
+    transform: translateY(2px) scale(.97);
+  }
+
+  .grade-button:focus-visible,
+  .nav-btn:focus-visible {
+    outline: 4px solid #ffe95b;
+    outline-offset: 4px;
+  }
+
+  /* 关于我们、历史主题弹窗 */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(15,51,79,.7);
+  }
+
+  .overlay.active {
+    display: flex;
+  }
+
+  .popup {
+    position: relative;
+    width: min(500px, 100%);
+    padding: 35px 25px;
+    border: 5px solid #ac7744;
+    border-radius: 25px;
+    background: #fff3d5;
+    color: #70401f;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0,0,0,.3);
+  }
+
+  .popup h2 {
+    margin-top: 0;
+  }
+
+  .popup p {
+    font-size: 16px;
+    line-height: 1.9;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 9px;
+    right: 15px;
+    border: 0;
+    background: transparent;
+    color: #70401f;
+    font-size: 28px;
+  }
+
+  /* 手机适配 */
+  @media (max-width: 650px) {
+    .navbar {
+      top: 1%;
+      left: 1%;
+      gap: 4px;
+    }
+
+    .nav-btn {
+      padding: 6px 8px;
+      border-width: 2px;
+      border-radius: 10px;
+      box-shadow: 0 2px 0 #925424;
+      font-size: 10px;
+    }
+
+    .grade-button {
+      width: 21%;
+      padding: 5px 2px;
+      min-height: 7%;
+      border-width: 2px;
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    .grade4 { left: 12%; }
+    .grade5 { left: 40%; }
+    .grade6 { left: 70%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      transition: none !important;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<main class="website">
+
+  <!-- 完整背景图 -->
+  <img
+    src="background.png"
+    class="background"
+    alt="HISTORIA QUEST 历史探险家冒险岛"
+  >
+
+  <!-- 顶部导航 -->
+  <nav class="navbar" aria-label="主导航">
+    <button class="nav-btn" onclick="goHome()">
+      🏠 主页
+    </button>
+
+    <button class="nav-btn" onclick="showPopup('about')">
+      📜 关于我们
+    </button>
+
+    <button class="nav-btn" onclick="showPopup('topics')">
+      📚 历史主题
+    </button>
+  </nav>
+
+  <!-- 四年级按钮 -->
+  <button
+    class="grade-button grade4"
+    onclick="openGrade(4)"
+    aria-label="四年级，开始探险">
+    开始探险 ➜
+  </button>
+
+  <!-- 五年级按钮 -->
+  <button
+    class="grade-button grade5"
+    onclick="openGrade(5)"
+    aria-label="五年级，开始探险">
+    开始探险 ➜
+  </button>
+
+  <!-- 六年级按钮 -->
+  <button
+    class="grade-button grade6"
+    onclick="openGrade(6)"
+    aria-label="六年级，开始探险">
+    开始探险 ➜
+  </button>
+
+</main>
+
+<!-- 弹窗 -->
+<div class="overlay" id="overlay" onclick="closePopup(event)">
+  <div class="popup"
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="popupTitle">
+
+    <button
+      class="close-btn"
+      onclick="closePopup()"
+      aria-label="关闭">
+      ×
+    </button>
+
+    <h2 id="popupTitle"></h2>
+    <p id="popupText"></p>
+
+  </div>
+</div>
+
+<script>
+  /* 三个年级的正式链接 */
+  const LINKS = {
+    4: "https://yongxuanhistoryclass.netlify.app/",
+    5: "https://huiyihistoryclasss.netlify.app/",
+    6: "https://std6huiyihistoryclass.netlify.app/"
+  };
+
+  /* 点击开始探险 */
+  function openGrade(grade) {
+    const url = LINKS[grade];
+
+    if (url) {
+      window.location.href = url;
+    }
+  }
+
+  /* 主页 */
+  function goHome() {
+    document.getElementById("overlay")
+      .classList.remove("active");
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+  /* 关于我们和历史主题 */
+  function showPopup(type) {
+    const title = document.getElementById("popupTitle");
+    const text = document.getElementById("popupText");
+
+    if (type === "about") {
+      title.textContent = "🌟 关于我们";
+      text.textContent =
+        "欢迎来到 HISTORIA QUEST — 历史探险家！" +
+        "这是为四、五、六年级学生打造的历史学习平台。" +
+        "让我们一起探索过去，学习历史，发现精彩！";
+    }
+
+    if (type === "topics") {
+      title.textContent = "📚 历史主题";
+      text.textContent =
+        "选择四年级、五年级或六年级，" +
+        "点击开始探险，进入相应的历史学习网页！";
+    }
+
+    document.getElementById("overlay")
+      .classList.add("active");
+  }
+
+  /* 关闭弹窗 */
+  function closePopup(event) {
+    if (
+      event &&
+      event.target !== document.getElementById("overlay")
+    ) {
+      return;
+    }
+
+    document.getElementById("overlay")
+      .classList.remove("active");
+  }
+
+  /* 按 Esc 关闭弹窗 */
+  document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") {
+      document.getElementById("overlay")
+        .classList.remove("active");
+    }
+  });
+</script>
+
+</body>
+</html>
